@@ -172,7 +172,6 @@ namespace Marya.ViewModels
             {
                 var date = selectedMeasurement.Date?.Date;
                 var day = Days.FirstOrDefault(x => x.Date?.Date == date);
-                var city = selectedMeasurement.City;
 
                 if (day != null && day.FreeSlotsList?.Count > 0)
                 {

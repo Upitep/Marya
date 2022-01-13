@@ -187,6 +187,7 @@ namespace Marya.ViewModels
                         }
                     }
                     FreeMeasurements?.Remove(MeasurementViewModel.SelectedMeasurement);
+                    SelectedDay = DayViewModel.Days.FirstOrDefault(x => x.Date?.Date == selectedMeasurement.Date?.Date);
                     MeasurementViewModel.SelectedMeasurement = selectedMeasurement;
                     OnPropertyChanged();
                 }
