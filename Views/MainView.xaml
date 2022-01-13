@@ -1,0 +1,259 @@
+﻿<Window x:Class="Marya.Views.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:Marya.ViewModels"
+        xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
+        d:DataContext="{d:DesignInstance Type=viewModels:MainViewModel}"
+        mc:Ignorable="d"
+        Title="MainView" Height="1000" Width="1100">
+
+    <Window.Resources>
+        <Style x:Key="ListBoxItemStyle" TargetType="ListBoxItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border Name="_Border"
+                                Padding="2"
+                                SnapsToDevicePixels="true">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="true">
+                                <Setter TargetName="_Border" Property="Background" Value="Red" />
+                                <Setter Property="Foreground" Value="Blue"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="CellItemStyle" TargetType="DataGridCell">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Background" Value="Black" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridCell">
+                        <Border Background="LightGray" BorderThickness="0">
+                            <Border x:Name="border"
+                              BorderBrush="Gainsboro"
+                              BorderThickness="2"
+                              Background="WhiteSmoke"
+                              CornerRadius="0"
+                                    Width="422">
+                                <ContentPresenter />
+                            </Border>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="true">
+                                <Setter TargetName="border" Property="BorderBrush"  Value="Red" />
+                                <Setter Property="Foreground" Value="Blue"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
+    
+    <Grid Visibility="Visible"  Background="LightGray">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="424" />
+            <ColumnDefinition Width="520*" />
+            <ColumnDefinition Width="580*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="482" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Border BorderThickness="1" BorderBrush="Gray" Grid.Column="0" Grid.Row="0">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="{Binding DayViewModel.MonthName}" FontSize="24" HorizontalAlignment="Center"/>
+
+                <StackPanel Orientation="Horizontal"  Margin="2,0,0,1" >
+                    <Border BorderBrush="Black" BorderThickness="1,1,0.5,1">
+                        <TextBlock Text="Пн" FontSize="18" FontWeight="Bold" TextAlignment="Center" Width="59"/>
+                    </Border>
+                    <Border BorderBrush="Black" BorderThickness="0.5,1,0.5,1">
+                        <TextBlock Text="Вт" FontSize="18" FontWeight="Bold" TextAlignment="Center" Width="59"/>
+                    </Border>
+                    <Border BorderBrush="Black" BorderThickness="0.5,1,0.5,1">
+                        <TextBlock Text="Ср" FontSize="18" FontWeight="Bold" TextAlignment="Center" Width="59"/>
+                    </Border>
+                    <Border BorderBrush="Black" BorderThickness="0.5,1,0.5,1">
+                        <TextBlock Text="Чт" FontSize="18" FontWeight="Bold" TextAlignment="Center" Width="59"/>
+                    </Border>
+                    <Border BorderBrush="Black" BorderThickness="0.5,1,0.5,1">
+                        <TextBlock Text="Пт" FontSize="18" FontWeight="Bold" TextAlignment="Center" Width="59"/>
+                    </Border>
+                    <Border BorderBrush="Black" BorderThickness="0.5,1,0.5,1">
+                        <TextBlock Text="Сб" FontSize="18" FontWeight="Bold" TextAlignment="Center" Width="59"/>
+                    </Border>
+                    <Border BorderBrush="Black" BorderThickness="0.5,1,1,1">
+                        <TextBlock Text="Вс" FontSize="18" FontWeight="Bold" TextAlignment="Center" Width="59"/>
+                    </Border>
+                </StackPanel>
+
+                <ListBox BorderThickness="0" Background="LightGray" ItemsSource="{Binding Path=DayViewModel.Days}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  SelectedItem="{Binding Path=SelectedDay }" d:ItemsSource="{d:SampleData ItemCount=10}" ItemContainerStyle="{DynamicResource ListBoxItemStyle}" 
+                  dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" >
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" Grid.IsSharedSizeScope="True" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="WhiteSmoke" BorderBrush="Gainsboro" BorderThickness="1">
+                                <StackPanel Width="54">
+                                    <TextBlock Text="{Binding Path=DateDayText}" FontSize="32" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    <TextBlock Text="{Binding Path=FreeSlots}" FontSize="16" Margin="0,0,5,0" FontWeight="Bold" Foreground="#FFBF3030" HorizontalAlignment="Right" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+        </Border>
+
+        <Border BorderThickness="1" BorderBrush="Gray" Grid.Column="0" Grid.Row="1">
+            <StackPanel>
+                <Label Content="Замеры на выбранный день" FontSize="16" FontWeight="DemiBold" HorizontalContentAlignment="Center" />
+
+                <DataGrid Background="LightGray" BorderThickness="0" ItemsSource="{Binding Path=SelectedDayInfo}"
+                  HeadersVisibility="None"
+                  GridLinesVisibility="None"
+				  AutoGenerateColumns="False"
+                  SelectionUnit="FullRow"
+                  SelectionMode="Single"
+                  CellStyle="{DynamicResource CellItemStyle}"
+                  d:ItemsSource="{d:SampleData ItemCount=5}"
+                  SelectedItem="{Binding Path=MeasurementViewModel.SelectedMeasurement}" 
+				  dd:DragDrop.IsDragSource="True" >
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border Background="WhiteSmoke" BorderBrush="Gainsboro" BorderThickness="1">
+                                        <StackPanel Margin="5">
+                                            <TextBlock FontSize="18" Text="{Binding Path=OrderNumber}" />
+                                            <TextBlock Text="{Binding Path=CustomerName}" />
+
+                                            <Border BorderBrush="{Binding Path=Interval.AlarmColor}" BorderThickness="3" Width="100" HorizontalAlignment="Left">
+                                                <ComboBox ItemsSource="{Binding Path=PossibleIntervalStruct}"
+                                                  SelectedItem="{Binding Path=Interval, UpdateSourceTrigger=PropertyChanged}"
+                                                  DisplayMemberPath="String" >
+                                                </ComboBox>
+                                            </Border>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+        </Border>
+
+        <Border BorderThickness="1" BorderBrush="Gray" Grid.Column="1" Grid.Row="0">
+            <StackPanel Orientation="Vertical">
+
+                <ComboBox  ItemsSource="{Binding Path=CitiesList}" d:ItemsSource="{d:SampleData ItemCount=3}"
+                       SelectedValue="{Binding Path=SelectedCity}" />
+
+                <Label Content="Незапланированные замеры" FontSize="16" FontWeight="DemiBold" HorizontalContentAlignment="Center" />
+
+                <ListBox Background="LightGray" BorderThickness="0" Height="429" ItemsSource="{Binding Path=FreeMeasurements}"
+                 SelectedValue="{Binding Path=MeasurementViewModel.SelectedMeasurement}" d:ItemsSource="{d:SampleData ItemCount=5}"
+                 ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
+                 dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="WhiteSmoke" BorderBrush="Gainsboro" BorderThickness="1">
+                                <StackPanel Margin="5">
+                                    <TextBlock FontSize="18" Text="{Binding Path=OrderNumber}" />
+                                    <TextBlock Text="{Binding Path=City}" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+        </Border>
+
+        <Border BorderThickness="1" BorderBrush="Gray" Grid.Column="1" Grid.Row="1">
+            <StackPanel>
+                <Label Content="Полный список замеров в базе" FontSize="16" FontWeight="DemiBold" HorizontalContentAlignment="Center" />
+                <Border Background="Cornsilk" Margin="5,0,5,10">
+                    <TextBox Text="{Binding Path=MeasurementViewModel.SearchText, UpdateSourceTrigger=PropertyChanged}" FontSize="16">
+                        <TextBox.Style>
+                            <Style TargetType="TextBox">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=MeasurementViewModel.SearchText.Length}" Value="0">
+                                        <Setter Property="Background">
+                                            <Setter.Value>
+                                                <VisualBrush Stretch="None" AlignmentX="Left">
+                                                    <VisualBrush.Visual>
+                                                        <TextBlock Text="Поиск..." FontStyle="Italic" FontSize="15" />
+                                                    </VisualBrush.Visual>
+                                                </VisualBrush>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+                </Border>
+
+                <ListBox BorderThickness="0" Background="LightGray"  ItemsSource="{Binding Path=MeasurementViewModel.FilteredMeasurements}"
+                 d:ItemsSource="{d:SampleData ItemCount=5}" ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
+                 SelectedValue="{Binding Path=MeasurementViewModel.SelectedMeasurement}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="WhiteSmoke" BorderBrush="Gainsboro" BorderThickness="1">
+                                <StackPanel Margin="5">
+                                    <TextBlock FontSize="18" Text="{Binding Path=OrderNumber}" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Path=City}" Width="140" />
+                                        <TextBlock Text="{Binding Path=Date, StringFormat={}{0:dd.MM.yyy}}" />
+                                        <TextBlock Margin="20,0,0,0" Text="{Binding Path=Interval.String}" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+        </Border>
+
+        <Border BorderThickness="1" BorderBrush="Gray" Grid.Column="2" Grid.Row="0">
+
+            <StackPanel Margin="10,10,10,-2" DataContext="{Binding Path=MeasurementViewModel.SelectedMeasurement}">
+                <Label Content="Информация о выбранном замере" FontSize="16" FontWeight="DemiBold" HorizontalContentAlignment="Center" />
+                <TextBlock Text="Выбранный элемент" />
+                <TextBlock Text="Номер" />
+                <TextBox Text="{Binding Path=OrderNumber, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Text="Город" />
+                <TextBox Text="{Binding Path=City, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Text="ФИО" />
+                <TextBox Text="{Binding Path=CustomerName, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Text="Адрес" />
+                <TextBox Text="{Binding Path=CustomerAddress, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Text="Номер телефона" />
+                <TextBox Text="{Binding Path=CustomerNumber, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Text="Дата" />
+                <TextBox Text="{Binding Path=Date, StringFormat={}{0:D}, UpdateSourceTrigger=PropertyChanged, ConverterCulture=ru}" IsReadOnly="True" />
+                <TextBlock Text="Интервал" />
+                <TextBox Text="{Binding Path=Interval.String, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+            </StackPanel>
+        </Border>
+
+        <Border BorderThickness="1" BorderBrush="Gray" Grid.Column="2" Grid.Row="1" />
+
+    </Grid>
+</Window>
