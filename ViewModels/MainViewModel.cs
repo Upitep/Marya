@@ -105,24 +105,6 @@ namespace Marya.ViewModels
             FreeMeasurements = new ObservableCollection<MeasurementViewModel.MeasurementVm>(MeasurementViewModel.Measurements.Where(x => x.Date == null && x.City == SelectedCity).ToList());
         }
 
-        //private RelayCommand _SetDateCommand;
-        //public RelayCommand SetDateCommand
-        //{
-        //    get { return _SetDateCommand ?? (_SetDateCommand = new RelayCommand(SetDateCommandExecute)); }
-        //}
-
-        //private void SetDateCommandExecute()
-        //{
-        //    if (MeasurementViewModel.SelectedMeasurement != null && SelectedDay != null)
-        //    {
-        //        MeasurementViewModel.SelectedMeasurement.Date = SelectedDay.Date;
-        //        SelectedDay.FreeSlots -= 1;
-        //        SelectedDayInfo.Add(MeasurementViewModel.SelectedMeasurement);
-        //        FreeMeasurements?.Remove(MeasurementViewModel.SelectedMeasurement);
-        //        OnPropertyChanged();
-        //    }
-        //}
-
         void IDropTarget.DragOver(IDropInfo dropInfo)
         {
             dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;

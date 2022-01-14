@@ -58,7 +58,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Models\Day.cs" />
     <Compile Include="ViewModels\DayViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
