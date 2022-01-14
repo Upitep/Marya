@@ -41,17 +41,13 @@ namespace Marya.ViewModels
                 }
             }
 
-            private ObservableCollection<CityVm> _TotalSlotsList;
-            public ObservableCollection<CityVm> TotalSlotsList
-            {
-                get => _TotalSlotsList ?? (_TotalSlotsList = new ObservableCollection<CityVm>());
-                set => _TotalSlotsList = value;
-            }
+            public ObservableCollection<CityVm> TotalSlotsList { get; }
 
             public DayVm(ObservableCollection<CityVm> cityList, DateTime? date = null)
             {
                 CityList = cityList;
                 Date = date;
+                TotalSlotsList = new ObservableCollection<CityVm>();
 
                 foreach (var city in cityList)
                 {

@@ -12,6 +12,7 @@ namespace Marya.ViewModels
         {
             DayViewModel = new DayViewModel();
             MeasurementViewModel = new MeasurementViewModel(DayViewModel.Days);
+            SelectedCity = CitiesList.FirstOrDefault();
         }
 
         private DayViewModel _DayViewModel;
@@ -29,59 +30,12 @@ namespace Marya.ViewModels
         private string _SelectedCity;
         public string SelectedCity
         {
-            get
-            {
-                if (_SelectedCity == null)
-                {
-                    _SelectedCity = CitiesList.FirstOrDefault();
-                    if (DayViewModel.Days?.Count > 0)
-                    {
-                        foreach (var day in DayViewModel.Days)
-                        {
-                            var freeSlotsList = day.TotalSlotsList.FirstOrDefault(x => x.Name == SelectedCity)
-                                ?.FreeSlotsList;
-                            if (freeSlotsList != null)
-                            {
-                                day.FreeSlotsList = freeSlotsList;
-                                day.FreeSlots = freeSlotsList.Any(x => x.Quantity != null)
-                                    ? freeSlotsList.Sum(x => x.Quantity)
-                                    : null;
-                            }
-                        }
-                    }
-
-                    FreeMeasurements = new ObservableCollection<MeasurementViewModel.MeasurementVm>(MeasurementViewModel.Measurements.Where(x => x.Date == null && x.City == SelectedCity).ToList());
-                    OnPropertyChanged();
-                    return _SelectedCity;
-                }
-                else
-                {
-                    return _SelectedCity;
-                }
-            }
+            get => _SelectedCity;
             set
             {
-                if (_SelectedCity == value) return;
                 _SelectedCity = value;
-                //DayViewModel = new DayViewModel(SelectedCity);
-                SelectedDay = null;
-                if (DayViewModel.Days?.Count > 0)
-                {
-                    foreach (var day in DayViewModel.Days)
-                    {
-                        var freeSlotsList = day.TotalSlotsList.FirstOrDefault(x => x.Name == SelectedCity)
-                            ?.FreeSlotsList;
-                        if (freeSlotsList != null)
-                        {
-                            day.FreeSlotsList = freeSlotsList;
-                            day.FreeSlots = freeSlotsList.Any(x => x.Quantity != null)
-                                ? freeSlotsList.Sum(x => x.Quantity)
-                                : null;
-                        }
-                    }
-                }
+                CitySelection();
 
-                FreeMeasurements = new ObservableCollection<MeasurementViewModel.MeasurementVm>(MeasurementViewModel.Measurements.Where(x => x.Date == null && x.City == SelectedCity).ToList());
                 OnPropertyChanged();
             }
         }
@@ -111,7 +65,7 @@ namespace Marya.ViewModels
         private ObservableCollection<MeasurementViewModel.MeasurementVm> _FreeMeasurements;
         public ObservableCollection<MeasurementViewModel.MeasurementVm> FreeMeasurements
         {
-            get { return _FreeMeasurements ?? (_FreeMeasurements = new ObservableCollection<MeasurementViewModel.MeasurementVm>(MeasurementViewModel.Measurements.Where(x => x.Date == null && x.City == SelectedCity).ToList())); }
+            get => _FreeMeasurements;
             set
             {
                 _FreeMeasurements = value;
@@ -122,12 +76,33 @@ namespace Marya.ViewModels
         private ObservableCollection<MeasurementViewModel.MeasurementVm> _SelectedDayInfo;
         public ObservableCollection<MeasurementViewModel.MeasurementVm> SelectedDayInfo
         {
-            get { return _SelectedDayInfo ?? (_SelectedDayInfo = new ObservableCollection<MeasurementViewModel.MeasurementVm>(MeasurementViewModel.Measurements.Where(x => (x?.Date?.Date == SelectedDay?.Date?.Date) && (SelectedDay?.Date?.Date != null) && (x?.City == SelectedCity)).ToList())); }
+            get => _SelectedDayInfo;
             set
             {
                 _SelectedDayInfo = value;
                 OnPropertyChanged();
             }
+        }
+
+        private void CitySelection()
+        {
+            SelectedDay = null;
+            if (DayViewModel.Days?.Count > 0)
+            {
+                foreach (var day in DayViewModel.Days)
+                {
+                    var freeSlotsList = day.TotalSlotsList.FirstOrDefault(x => x.Name == SelectedCity)
+                        ?.FreeSlotsList;
+                    if (freeSlotsList != null)
+                    {
+                        day.FreeSlotsList = freeSlotsList;
+                        day.FreeSlots = freeSlotsList.Any(x => x.Quantity != null)
+                            ? freeSlotsList.Sum(x => x.Quantity)
+                            : null;
+                    }
+                }
+            }
+            FreeMeasurements = new ObservableCollection<MeasurementViewModel.MeasurementVm>(MeasurementViewModel.Measurements.Where(x => x.Date == null && x.City == SelectedCity).ToList());
         }
 
         //private RelayCommand _SetDateCommand;

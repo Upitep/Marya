@@ -53,37 +53,10 @@ namespace Marya.ViewModels
             private IntervalStruct _Interval;
             public IntervalStruct Interval
             {
-                get => _Interval ?? ( _Interval = new IntervalStruct() );
+                get => _Interval;
                 set
                 {
-                    if (value != null && Date != null)
-                    {
-                        if (Interval.Time != null && Interval.Time != value.Time && value.Time != null)
-                        {
-                            var day = Days.FirstOrDefault(x => x.Date?.Date == Date.Value.Date);
-                            if (day != null && Interval.Time != value.Time)
-                            {
-                                Date = Date.Value.Date + value.Time;
-                                
-                                var quant = day.FreeSlotsList.FirstOrDefault(x => x.StartInterval == Interval.Time);
-                                    if (quant != null) quant.Quantity += 1;
-                                quant = day.FreeSlotsList.FirstOrDefault(x => x.StartInterval == value.Time);
-                                    if (quant != null) quant.Quantity -= 1;
-                                day.FreeSlots = day.FreeSlotsList.Where(x => x.Quantity != null).Sum(x => x.Quantity);
-                            }
-                        }
-                        else if (value.Time != null)
-                        {
-                            Date = Date.Value.Date + value.Time;
-                            var day = Days.FirstOrDefault(x => x.Date?.Date == Date.Value.Date);
-                            if (day != null && Interval.Time != value.Time)
-                            {
-                                var quant = day.FreeSlotsList.FirstOrDefault(x => x.StartInterval == value.Time);
-                                if (quant != null) quant.Quantity -= 1;
-                                day.FreeSlots = day.FreeSlotsList.Where(x => x.Quantity != null).Sum(x => x.Quantity);
-                            }
-                        }
-                    }
+                    IntervalSelection(value);
                     _Interval = value;
                     OnPropertyChanged();
                 }
@@ -111,6 +84,38 @@ namespace Marya.ViewModels
                 CustomerNumber = customerNumber;
                 Date = date;
             }
+
+            private void IntervalSelection(IntervalStruct value)
+            {
+                if (value != null && Date != null)
+                {
+                    if (Interval.Time != null && Interval.Time != value.Time && value.Time != null)
+                    {
+                        var day = Days.FirstOrDefault(x => x.Date?.Date == Date.Value.Date);
+                        if (day != null && Interval.Time != value.Time)
+                        {
+                            Date = Date.Value.Date + value.Time;
+
+                            var quant = day.FreeSlotsList.FirstOrDefault(x => x.StartInterval == Interval.Time);
+                            if (quant != null) quant.Quantity += 1;
+                            quant = day.FreeSlotsList.FirstOrDefault(x => x.StartInterval == value.Time);
+                            if (quant != null) quant.Quantity -= 1;
+                            day.FreeSlots = day.FreeSlotsList.Where(x => x.Quantity != null).Sum(x => x.Quantity);
+                        }
+                    }
+                    else if (value.Time != null)
+                    {
+                        Date = Date.Value.Date + value.Time;
+                        var day = Days.FirstOrDefault(x => x.Date?.Date == Date.Value.Date);
+                        if (day != null && Interval.Time != value.Time)
+                        {
+                            var quant = day.FreeSlotsList.FirstOrDefault(x => x.StartInterval == value.Time);
+                            if (quant != null) quant.Quantity -= 1;
+                            day.FreeSlots = day.FreeSlotsList.Where(x => x.Quantity != null).Sum(x => x.Quantity);
+                        }
+                    }
+                }
+            }
         }
 
         private MeasurementVm _SelectedMeasurement;
@@ -128,6 +133,7 @@ namespace Marya.ViewModels
                 OnPropertyChanged();
             }
         }
+
         public IntervalStruct GetSelectedMeasurementInterval(MeasurementVm selectedMeasurement)
         {
             var result = new IntervalStruct();
