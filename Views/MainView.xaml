@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:Marya.ViewModels"
-        xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
+        xmlns:dd="urn:gong-wpf-dragdrop"
         d:DataContext="{d:DesignInstance Type=viewModels:MainViewModel}"
         mc:Ignorable="d"
         Title="MainView" Height="1000" Width="1100">

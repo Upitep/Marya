@@ -8,6 +8,71 @@ namespace Marya.ViewModels
 {
     public class MeasurementViewModel : PropertyChangedAbs
     {
+        public ObservableCollection<DayViewModel.DayVm> Days { get; }
+        public ObservableCollection<MeasurementVm> Measurements { get; }
+
+        private MeasurementVm _SelectedMeasurement;
+        public MeasurementVm SelectedMeasurement
+        {
+            get => _SelectedMeasurement;
+            set
+            {
+                _SelectedMeasurement = value;
+                if (_SelectedMeasurement != null)
+                {
+                    _SelectedMeasurement.PossibleIntervalStruct = GetSelectedMeasurementPossibleIntervalStruct(_SelectedMeasurement);
+                    _SelectedMeasurement.Interval = GetSelectedMeasurementInterval(_SelectedMeasurement);
+                }
+                OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<MeasurementVm> FilteredMeasurements
+        {
+            get
+            {
+                if (SearchText == null) return Measurements;
+                return new ObservableCollection<MeasurementVm>(Measurements
+                    .Where(x => 
+                        x.City.ToUpper().StartsWith(SearchText.ToUpper())
+                        || x.OrderNumber.ToUpper().StartsWith(SearchText.ToUpper())
+                        || x.CustomerName.ToUpper().StartsWith(SearchText.ToUpper())
+                        || x.CustomerAddress.ToUpper().StartsWith(SearchText.ToUpper())
+                        || x.CustomerNumber.ToUpper().StartsWith(SearchText.ToUpper())
+                        || (DateTime.TryParse(SearchText, out var tempDate) && tempDate == x.Date)
+                        || (x.Interval?.String != null && x.Interval.String.StartsWith(SearchText))
+                        ).ToList());
+            }
+        }
+
+        private string _SearchText = "";
+        public string SearchText
+        {
+            get => _SearchText;
+            set
+            {
+                _SearchText = value;
+
+                OnPropertyChanged();
+                OnPropertyChanged("FilteredMeasurements");
+            }
+        }
+
+        public MeasurementViewModel(ObservableCollection<DayViewModel.DayVm> days)
+        {
+            Days = days;
+            var measurementsList = new MeasurementsList();
+            Measurements = new ObservableCollection<MeasurementVm>();
+
+            if (measurementsList.Measurements.Count > 0)
+            {
+                foreach (var measurement in measurementsList.Measurements)
+                {
+                    Measurements.Add(new MeasurementVm(Days, measurement.Id, measurement.OrderNumber, measurement.City, measurement.CustomerName, measurement.CustomerAddress, measurement.CustomerNumber, measurement.Date));
+                }
+            }
+        }
+
         public class MeasurementVm : PropertyChangedAbs
         {
             public ObservableCollection<DayViewModel.DayVm> Days { get; set; }
@@ -50,7 +115,7 @@ namespace Marya.ViewModels
                 set { _PossibleIntervalStruct = value; OnPropertyChanged(); }
             }
 
-            private IntervalStruct _Interval;
+            private IntervalStruct _Interval = new IntervalStruct();
             public IntervalStruct Interval
             {
                 get => _Interval;
@@ -85,7 +150,7 @@ namespace Marya.ViewModels
                 Date = date;
             }
 
-            private void IntervalSelection(IntervalStruct value)
+            public void IntervalSelection(IntervalStruct value)
             {
                 if (value != null && Date != null)
                 {
@@ -118,20 +183,68 @@ namespace Marya.ViewModels
             }
         }
 
-        private MeasurementVm _SelectedMeasurement;
-        public MeasurementVm SelectedMeasurement
+        public sealed class IntervalStruct
         {
-            get => _SelectedMeasurement;
-            set
+            public string String { get; set; }
+            public TimeSpan? Time { get; set; }
+            public Brush AlarmColor { get; set; }
+
+            public IntervalStruct(string str = null, TimeSpan? time = null, Brush alarmColor = null)
             {
-                _SelectedMeasurement = value;
-                if (_SelectedMeasurement != null)
-                {
-                    _SelectedMeasurement.PossibleIntervalStruct = GetSelectedMeasurementPossibleIntervalStruct(_SelectedMeasurement);
-                    _SelectedMeasurement.Interval = GetSelectedMeasurementInterval(_SelectedMeasurement);
-                }
-                OnPropertyChanged();
+                String = str;
+                Time = time;
+                AlarmColor = alarmColor ?? (Brush)typeof(Brushes).GetProperty("Red")?.GetValue(null);
             }
+
+            private static int GetHashCodeHelper(int[] subCodes)
+            {
+                if ((object)subCodes == null || subCodes.Length == 0)
+                    return 0;
+
+                int result = subCodes[0];
+
+                for (int i = 1; i < subCodes.Length; i++)
+                    result = unchecked(result * 397) ^ subCodes[i];
+
+                return result;
+            }
+            public override int GetHashCode() => GetHashCodeHelper(
+                new int[]
+                {
+                    String == null ? 0 : String.GetHashCode(),
+                    Time.GetHashCode(),
+                    AlarmColor.GetHashCode(),
+                }
+            );
+
+            private static bool EqualsHelper(IntervalStruct first, IntervalStruct second) =>
+                first.String == second.String &&
+                first.Time == second.Time &&
+                first.AlarmColor == second.AlarmColor;
+
+            public bool Equals(IntervalStruct other)
+            {
+                if ((object)this == (object)other)
+                    return true;
+
+                if ((object)other == null)
+                    return false;
+
+                if (this.GetType() != other.GetType())
+                    return false;
+
+                return EqualsHelper(this, other);
+            }
+
+            public override bool Equals(object obj) => this.Equals(obj as IntervalStruct);
+
+            public static bool Equals(IntervalStruct first, IntervalStruct second) =>
+                first?.Equals(second) ?? (object)first == (object)second;
+
+            public static bool operator ==(IntervalStruct first, IntervalStruct second) => Equals(first, second);
+
+            public static bool operator !=(IntervalStruct first, IntervalStruct second) => !Equals(first, second);
+
         }
 
         public IntervalStruct GetSelectedMeasurementInterval(MeasurementVm selectedMeasurement)
@@ -202,118 +315,5 @@ namespace Marya.ViewModels
             return resultList;
         }
 
-        public sealed class IntervalStruct
-        {
-            public string String { get; set; }
-            public TimeSpan? Time { get; set; }
-            public Brush AlarmColor { get; set; }
-
-            public IntervalStruct(string str = null, TimeSpan? time = null, Brush alarmColor = null)
-            {
-                String = str;
-                Time = time;
-                AlarmColor = alarmColor ?? (Brush)typeof(Brushes).GetProperty("Red")?.GetValue(null);
-            }
-
-            private static int GetHashCodeHelper(int[] subCodes)
-            {
-                if ((object)subCodes == null || subCodes.Length == 0)
-                    return 0;
-
-                int result = subCodes[0];
-
-                for (int i = 1; i < subCodes.Length; i++)
-                    result = unchecked(result * 397) ^ subCodes[i];
-
-                return result;
-            }
-            public override int GetHashCode() => GetHashCodeHelper(
-                new int[]
-                {
-                    String == null ? 0 : String.GetHashCode(),
-                    Time.GetHashCode(),
-                    AlarmColor.GetHashCode(),
-                }
-            );
-
-            private static bool EqualsHelper(IntervalStruct first, IntervalStruct second) =>
-                first.String == second.String &&
-                first.Time == second.Time &&
-                first.AlarmColor == second.AlarmColor;
-
-            public bool Equals(IntervalStruct other)
-            {
-                if ((object)this == (object)other)
-                    return true;
-
-                if ((object)other == null)
-                    return false;
-
-                if (this.GetType() != other.GetType())
-                    return false;
-
-                return EqualsHelper(this, other);
-            }
-
-            public override bool Equals(object obj) => this.Equals(obj as IntervalStruct);
-
-            public static bool Equals(IntervalStruct first, IntervalStruct second) =>
-                first?.Equals(second) ?? (object)first == (object)second;
-
-            public static bool operator ==(IntervalStruct first, IntervalStruct second) => Equals(first, second);
-
-            public static bool operator !=(IntervalStruct first, IntervalStruct second) => !Equals(first, second);
-
-        }
-
-        public ObservableCollection<DayViewModel.DayVm> Days { get; }
-
-        public ObservableCollection<MeasurementVm> Measurements { get; }
-
-        public ObservableCollection<MeasurementVm> FilteredMeasurements
-        {
-            get
-            {
-                if (SearchText == null) return Measurements;
-                return new ObservableCollection<MeasurementVm>(Measurements
-                    .Where(x => 
-                        x.City.ToUpper().StartsWith(SearchText.ToUpper())
-                        || x.OrderNumber.ToUpper().StartsWith(SearchText.ToUpper())
-                        || x.CustomerName.ToUpper().StartsWith(SearchText.ToUpper())
-                        || x.CustomerAddress.ToUpper().StartsWith(SearchText.ToUpper())
-                        || x.CustomerNumber.ToUpper().StartsWith(SearchText.ToUpper())
-                        || (DateTime.TryParse(SearchText, out var tempDate) && tempDate == x.Date)
-                        || (x.Interval?.String != null && x.Interval.String.StartsWith(SearchText))
-                        ).ToList());
-            }
-        }
-
-        private string _SearchText = "";
-        public string SearchText
-        {
-            get => _SearchText;
-            set
-            {
-                _SearchText = value;
-
-                OnPropertyChanged();
-                OnPropertyChanged("FilteredMeasurements");
-            }
-        }
-
-        public MeasurementViewModel(ObservableCollection<DayViewModel.DayVm> days)
-        {
-            Days = days;
-            var measurementsList = new MeasurementsList();
-            Measurements = new ObservableCollection<MeasurementVm>();
-
-            if (measurementsList.Measurements.Count > 0)
-            {
-                foreach (var measurement in measurementsList.Measurements)
-                {
-                    Measurements.Add(new MeasurementVm(Days, measurement.Id, measurement.OrderNumber, measurement.City, measurement.CustomerName, measurement.CustomerAddress, measurement.CustomerNumber, measurement.Date));
-                }
-            }
-        }
     }
 }

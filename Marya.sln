@@ -5,6 +5,11 @@ VisualStudioVersion = 17.1.31911.260
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marya", "Marya.csproj", "{7B82FDE6-5F34-46CC-BAE7-F0ADCBA7141B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marya_Test", "..\Marya_Test\Marya_Test.csproj", "{03486CE8-5D78-4E76-BE0F-BDA84B656695}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7B82FDE6-5F34-46CC-BAE7-F0ADCBA7141B} = {7B82FDE6-5F34-46CC-BAE7-F0ADCBA7141B}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +20,10 @@ Global
 		{7B82FDE6-5F34-46CC-BAE7-F0ADCBA7141B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B82FDE6-5F34-46CC-BAE7-F0ADCBA7141B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B82FDE6-5F34-46CC-BAE7-F0ADCBA7141B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03486CE8-5D78-4E76-BE0F-BDA84B656695}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03486CE8-5D78-4E76-BE0F-BDA84B656695}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03486CE8-5D78-4E76-BE0F-BDA84B656695}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03486CE8-5D78-4E76-BE0F-BDA84B656695}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
