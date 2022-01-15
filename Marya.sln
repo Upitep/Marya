@@ -5,10 +5,7 @@ VisualStudioVersion = 17.1.31911.260
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marya", "Marya.csproj", "{7B82FDE6-5F34-46CC-BAE7-F0ADCBA7141B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marya_Test", "..\Marya_Test\Marya_Test.csproj", "{03486CE8-5D78-4E76-BE0F-BDA84B656695}"
-	ProjectSection(ProjectDependencies) = postProject
-		{7B82FDE6-5F34-46CC-BAE7-F0ADCBA7141B} = {7B82FDE6-5F34-46CC-BAE7-F0ADCBA7141B}
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marya_Test", "Marya_Test\Marya_Test.csproj", "{03486CE8-5D78-4E76-BE0F-BDA84B656695}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
