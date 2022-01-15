@@ -173,6 +173,7 @@ namespace Marya.ViewModels
                          && FreeMeasurements.Contains(dropInfo.Data) != true)
                 {
                     var selectedMeasurement = (MeasurementViewModel.MeasurementVm)dropInfo.Data;
+                    if (MeasurementViewModel.SelectedMeasurement != selectedMeasurement) return;
                     var selSlot =
                         SelectedDay.FreeSlotsList.FirstOrDefault(x =>
                             x.StartInterval == selectedMeasurement.Interval.Time);
