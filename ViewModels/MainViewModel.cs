@@ -85,6 +85,7 @@ namespace Marya.ViewModels
             }
         }
 
+        //Смена города через комбобокс
         private void CitySelection()
         {
             SelectedDay = null;
@@ -117,6 +118,7 @@ namespace Marya.ViewModels
             MakeDrop(dropInfo);   
         }
 
+        //Логика Drag&Drop - проверяем исходный элемент и цель, назначаем дату замеру, организуем перемещение замера между днями и удаление замера из дня
         public void MakeDrop(IDropInfo dropInfo)
         {
             if (dropInfo.Data != null)

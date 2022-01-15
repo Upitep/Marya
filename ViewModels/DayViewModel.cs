@@ -10,6 +10,7 @@ namespace Marya.ViewModels
         public string MonthName => Days.LastOrDefault()?.Date?.ToString("MMMM");
         public ObservableCollection<DayVm> Days { get; set; }
 
+        //В конструкторе реализована выгрузка данных из модели Day и преобразование их в формат данных, требуемых для работы с графикой
         public DayViewModel()
         {
             var month = new Month();

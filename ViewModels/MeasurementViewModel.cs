@@ -27,6 +27,7 @@ namespace Marya.ViewModels
             }
         }
 
+        //Реализация полнотекстового поиска по всем доступным полям замера
         public ObservableCollection<MeasurementVm> FilteredMeasurements
         {
             get
@@ -58,6 +59,7 @@ namespace Marya.ViewModels
             }
         }
 
+        //В конструкторе реализована выгрузка данных из модели Measurement и преобразование их в формат, требующийся для работы с граифкой
         public MeasurementViewModel(ObservableCollection<DayViewModel.DayVm> days)
         {
             Days = days;
@@ -150,6 +152,7 @@ namespace Marya.ViewModels
                 Date = date;
             }
 
+            //Реализация присовения интервала конкретному измерению, а так же пересчет доступных слотов измерений в указанном дне, а также реализация смены интервала в пределах выделенного дня
             public void IntervalSelection(IntervalStruct value)
             {
                 if (value != null && Date != null)
@@ -183,6 +186,7 @@ namespace Marya.ViewModels
             }
         }
 
+        //Класс интервала, а также перегрузка методов сравнения, т.к. требуется для работы графики и прохождения тестов
         public sealed class IntervalStruct
         {
             public string String { get; set; }
@@ -247,6 +251,7 @@ namespace Marya.ViewModels
 
         }
 
+        //Метод, реализацющий получение текущего интервала исходя из полной даты измерения, передаваемого в качестве аргумента. Требуется для заполнение комбобокса интервала
         public IntervalStruct GetSelectedMeasurementInterval(MeasurementVm selectedMeasurement)
         {
             var result = new IntervalStruct();
@@ -283,6 +288,8 @@ namespace Marya.ViewModels
             }
             return result;
         }
+
+        //Метод, реализующий получение списка доступных интервалов замеров по указанному измерению и доступным слотам выбранного дня. Требуется для заполнения списка комбобокса интервалов
         public ObservableCollection<IntervalStruct> GetSelectedMeasurementPossibleIntervalStruct(MeasurementVm selectedMeasurement)
         {
             var resultList = new ObservableCollection<IntervalStruct>();
